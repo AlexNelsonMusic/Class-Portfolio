@@ -1,0 +1,10 @@
+textarea{
+    font-size: 19px;
+    width: 75vw;
+    height: 60vh;
+}
+input{
+    width: 75vw;
+    height: 3vh;
+    font-size: 10px;
+}

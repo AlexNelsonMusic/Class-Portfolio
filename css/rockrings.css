@@ -1,0 +1,127 @@
+html{
+    user-select: none; /* supported by Chrome and Opera */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    -webkit-touch-callout: none;
+    touch-action: manipulation;
+    background-color: #000;
+    background-image: url('../images/ground.jpg');
+    background-size: 100vw;
+    zoom: 125%;
+}
+body{
+    overflow: hidden;
+}
+.small-btn{
+    width: 50px;
+    border-radius: 50%;
+}
+#arrow{
+    width: 50px;
+    rotate: 180deg;
+    position: absolute;
+    left: 60px;
+    top: 41%;
+    filter:brightness(75%);
+}
+#gtwo{
+    position: absolute;
+    left: 20px;
+    bottom: 70px;
+}
+#atwo{
+    position: absolute;
+    bottom: 20px;
+    left: 162px;
+}
+#bbtwo{
+    position: absolute;
+    right: 20px;
+    bottom: 70px;
+}
+#dthree{
+    position: absolute;
+    left: 90px;
+    bottom: 160px;
+}
+#ebthree{
+    position: absolute;
+    position: absolute;
+    bottom: 130px;
+    left: 162px;
+}
+#gthree{
+    position: absolute;
+    right: 90px;
+    bottom: 160px;   
+}
+#athree{
+    position: absolute;
+    left: 20px;
+    top: 70px;
+}
+#bbthree{
+    position: absolute;
+    top: 20px;
+    left: 162px;
+}
+#dfour{
+    position: absolute;
+    right: 20px;
+    top: 70px;
+}
+#ebfour{
+    position: absolute;
+    left: 90px;
+    top: 160px;
+}
+#gfour{
+    position: absolute;
+    top: 130px;
+    left: 162px;
+}
+#afour{
+    position: absolute;
+    right: 90px;
+    top: 160px; 
+}
+#dfive{
+    display: none;
+    width: 100px;
+    border-radius: 50%;
+    margin: auto;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+}
+.card{
+    background-color: beige;
+    border-radius: 10px;
+    padding-block: 50px;
+    padding-inline: 20px;
+    margin-top: 200px;
+    display: flex;
+}
+.card p{
+    text-align: center;
+    align-items: center;
+    font-weight: bold
+}
+#continue{
+    display: block;
+    margin: 0 auto;
+    margin-top: 100px;
+    height: 60px;
+    width: 150px;
+}
+#instructions{
+    margin-top: 50px;
+}
+#start{
+    display: block;
+    margin: 0 auto;
+    margin-top: 50px;
+    height: 60px;
+    width: 150px;
+}
