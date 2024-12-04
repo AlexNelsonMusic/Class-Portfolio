@@ -1,0 +1,37 @@
+[
+    { 
+        "name": "Electric Guitar (strat-style)",
+        "type": "Instrument",
+        "url": "images/audio.route/electric.png" 
+    },
+    { 
+        "name": "Electric Guitar (les paul-style)",
+        "type": "Instrument",
+        "url": "images/audio.route/electric2.png" 
+    },
+    { 
+        "name": "Electric Bass",
+        "type": "Instrument",
+        "url": "images/audio.route/bass.png" 
+    },
+    { 
+        "name": "Acoustic Guitar",
+        "type": "Instrument", 
+        "url": "images/audio.route/acoustic.png" 
+    },
+    { 
+        "name": "Guitar Amp (combo)",
+        "type": "Speaker", 
+        "url": "images/audio.route/vox.png" 
+    },
+    { 
+        "name": "Shure SM57",
+        "type": "Microphone",
+        "url": "images/audio.route/SM57.png" 
+    },
+    { 
+        "name": "Sennheiser e609",
+        "type": "Microphone",
+        "url":  "images/audio.route/e609.png" 
+    }
+]
