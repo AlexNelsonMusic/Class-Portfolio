@@ -512,3 +512,22 @@ function saveCanvasAsPDF() {
     pdf.save(`${fileName}.pdf`);
 }
 
+function saveCanvasState() {
+    const canvasState = canvas.toJSON();
+    localStorage.setItem('canvasState', JSON.stringify(canvasState));
+    console.log('Canvas state saved.');
+}
+
+canvas.on('object:modified', saveCanvasState);
+canvas.on('object:added', saveCanvasState);
+canvas.on('object:removed', saveCanvasState);
+
+window.addEventListener('load', () => {
+    const savedCanvasState = localStorage.getItem('canvasState');
+    if (savedCanvasState) {
+        canvas.loadFromJSON(savedCanvasState, () => {
+            canvas.renderAll();
+            console.log('Canvas state restored.');
+        });
+    }
+});
