@@ -91,6 +91,11 @@ document.addEventListener('keydown', (e) => {
         }
     }
 
+    if ((e.metaKey || e.ctrlKey) && e.code === 'KeyC') {
+        e.preventDefault();
+        document.getElementById('controls-window').style.visibility = 'visible';
+    
+
     const activeObject = canvas.getActiveObject();
 
     // prevent hotkeys from activating while editing textbox
@@ -183,7 +188,7 @@ document.addEventListener('keydown', (e) => {
         const gearInventory = compileGearInventory();
         alert('Gear Inventory:\n' + gearInventory.join('\n')); 
     }
-});
+}});
 
 // object duplication
 
@@ -529,3 +534,9 @@ window.addEventListener('load', () => {
         });
     }
 });
+
+// controls window
+
+document.getElementById('close-window').addEventListener('click', () => {
+    document.getElementById('controls-window').style.visibility = 'hidden';
+} )

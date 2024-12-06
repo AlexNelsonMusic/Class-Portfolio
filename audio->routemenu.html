@@ -12,10 +12,12 @@
 
     <div id="menu-items">
         <p><a href="audio->route.html">Create Setup/Continue Editing</a></p>
-        <p><a href="#">Controls</a></p>
+        <p id="controls"><a href="#">Controls</a></p>
     </div>
 
-    <div class="controls">
+    <div id="controls-window">
+        <input type="button" id="close-window">
+        <label for="close-window">X</label>
         <table>
             <caption>Controls</caption>
             <thead>
@@ -88,5 +90,7 @@
             </tbody>
         </table>
     </div>
+
+    <script src="javascript/audio->routemenu.js"></script>
 </body>
 </html>
