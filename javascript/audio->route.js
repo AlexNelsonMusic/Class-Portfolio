@@ -128,22 +128,20 @@ document.addEventListener('keydown', (e) => {
     }
 
     if (e.code === "KeyN") {
-        const note = new fabric.Textbox('Text', {
+        const note = new fabric.Textbox('Note', {
             width: 75,
             left: pointerPosition.x,
             top: pointerPosition.y,
-            backgroundColor: '#FFFFE0', // Visual distinction
             type: 'note', // Custom property
         });
         canvas.add(note);
     }
 
     if (e.code === "KeyP") {
-        const personalGear = new fabric.Textbox('Text', {
+        const personalGear = new fabric.Textbox('Custom Gear', {
             width: 75,
             left: pointerPosition.x,
             top: pointerPosition.y,
-            backgroundColor: '#ADD8E6', // Visual distinction
             type: 'personal', // Custom property
         });
         canvas.add(personalGear);
