@@ -18,6 +18,8 @@ resizeCanvas();
 
 window.addEventListener('resize', resizeCanvas);
 
+// get mouse position
+
 let pointerPosition = { x: 0, y: 0 };
 
 canvas.on('mouse:move', (event) => {
@@ -26,24 +28,94 @@ canvas.on('mouse:move', (event) => {
     pointerPosition.y = pointer.y;
 });
 
+// layer logic
+
+document.addEventListener('keydown', (e) => {
+    const activeObject = canvas.getActiveObject();
+
+    if (!activeObject) return; // Ensure an object is selected
+
+    switch (e.code) {
+        case 'KeyF':
+            if (e.shiftKey) {
+                // Shift + F: Bring to Front
+                canvas.bringToFront(activeObject);
+            } else {
+                // F: Bring Forward
+                canvas.bringForward(activeObject);
+            }
+            break;
+
+        case 'KeyB':
+            if (e.shiftKey) {
+                // Shift + B: Send to Back
+                canvas.sendToBack(activeObject);
+            } else {
+                // B: Send Backward
+                canvas.sendBackwards(activeObject);
+            }
+            break;
+    }
+
+    canvas.renderAll(); // Re-render to reflect changes
+});
+
+// retain true layer position when object is selected
+canvas.preserveObjectStacking = true;
+
+// object creation/deletion, hotkeys/shortcuts
+
 let isSearchBarActive = false;
 
-// textboxes, shapes, deletion
+
 document.addEventListener('keydown', (e) => {
     if (isSearchBarActive) {
         return;
     }
 
+    if ((e.metaKey || e.ctrlKey) && e.code === 'KeyS') {
+        e.preventDefault();
+        saveCanvasAsPDF();
+    }
+
+    if ((e.ctrlKey || e.metaKey) && e.code === 'KeyA') {
+        e.preventDefault();
+
+        const allObjects = canvas.getObjects();
+        if (allObjects.length > 0) {
+            const selection = new fabric.ActiveSelection(allObjects, {
+                canvas: canvas,
+            });
+            canvas.setActiveObject(selection);
+            canvas.renderAll();
+        }
+    }
+
     const activeObject = canvas.getActiveObject();
 
-    // allow character deletion while editing textbox
-    if (activeObject && activeObject.type === 'textbox' && activeObject.isEditing) {
+    // prevent hotkeys from activating while editing textbox
+    if ((activeObject && (activeObject.type === 'note' || activeObject.type === 'personal') && activeObject.isEditing) || (e.metaKey || e.ctrlKey)) {
         return;
+    }
+
+    if (e.code === "KeyG") {
+        e.preventDefault(); // stop g from being typed into the search bar
+        gearListContainer.style.display = "block";
+
+        gearListContainer.style.position = "absolute";
+        gearListContainer.style.left = `${pointerPosition.x}px`;
+        gearListContainer.style.top = `${pointerPosition.y}px`;
+        
+        searchBar.value = ""; // clear search bar
+        searchResults.innerHTML = ""; // clear search results
+        searchBar.focus();
+        isSearchBarActive = true;
     }
 
     if (e.code === "Backspace" || e.code === "Delete") {
         const activeObjects = canvas.getActiveObjects();
 
+        // allow group deletion
         if (activeObjects.length > 0) {
             activeObjects.forEach((obj) => {
                 canvas.remove(obj); // remove each object
@@ -55,13 +127,26 @@ document.addEventListener('keydown', (e) => {
         }
     }
 
-    if (e.code === "KeyT") {
-        const textBox = new fabric.Textbox('Text', {
+    if (e.code === "KeyN") {
+        const note = new fabric.Textbox('Text', {
             width: 75,
             left: pointerPosition.x,
-            top: pointerPosition.y
+            top: pointerPosition.y,
+            backgroundColor: '#FFFFE0', // Visual distinction
+            type: 'note', // Custom property
         });
-        canvas.add(textBox);
+        canvas.add(note);
+    }
+
+    if (e.code === "KeyP") {
+        const personalGear = new fabric.Textbox('Text', {
+            width: 75,
+            left: pointerPosition.x,
+            top: pointerPosition.y,
+            backgroundColor: '#ADD8E6', // Visual distinction
+            type: 'personal', // Custom property
+        });
+        canvas.add(personalGear);
     }
 
     if (e.code === "KeyR") {
@@ -94,7 +179,12 @@ document.addEventListener('keydown', (e) => {
             top: pointerPosition.y
         });
         canvas.add(circle);
-    } 
+    }
+
+    if (e.code === 'KeyI') {
+        const gearInventory = compileGearInventory();
+        alert('Gear Inventory:\n' + gearInventory.join('\n')); 
+    }
 });
 
 // object duplication
@@ -147,6 +237,53 @@ canvas.on('mouse:up', () => {
     }
 });
 
+// object nudging
+
+document.addEventListener('keydown', (e) => {
+    const activeObject = canvas.getActiveObject();
+
+    if (!activeObject) return; // Do nothing if no object is selected
+
+    const isShiftPressed = e.shiftKey;
+    let step;
+    if (isShiftPressed) {
+        step = 10;
+    } else {
+        step = 1;
+    }
+
+    switch (e.code) {
+        case 'ArrowUp':
+            activeObject.top -= step;
+            break;
+        case 'ArrowDown':
+            activeObject.top += step;
+            break;
+        case 'ArrowLeft':
+            activeObject.left -= step;
+            break;
+        case 'ArrowRight':
+            activeObject.left += step;
+            break;
+        default:
+            return; // ignore other keys
+    }
+
+    activeObject.setCoords(); // update object position
+    canvas.renderAll();
+
+    colorPicker.style.display = 'none';
+});
+
+// re-show color picker after nudging
+document.addEventListener('keyup', (e) => {
+    if (
+        ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)
+    ) {
+        movePicker();
+    }
+});
+
 // color picker
 
 const colorPicker = document.createElement('input');
@@ -160,7 +297,7 @@ function movePicker() {
     const activeObject = canvas.getActiveObject();
 
     // hide picker if no objects selected
-    if (!activeObject || !(activeObject.type === 'rect' || activeObject.type === 'circle' || activeObject.type === 'textbox')) {
+    if (!activeObject || !(activeObject.type === 'rect' || activeObject.type === 'circle' || activeObject.type === 'note'|| activeObject.type === 'personal')) {
         colorPicker.style.display = 'none';
         return;
     }
@@ -204,10 +341,11 @@ function rgbToHex(color) {
 canvas.on('selection:created', movePicker);
 canvas.on('selection:updated', movePicker);
 
-// hide color picker on unselect or object drag
+// hide color picker on unselect
 canvas.on('selection:cleared', () => {
     colorPicker.style.display = 'none';
 });
+// hide color picker on object drag
 canvas.on('object:moving', () => {
     colorPicker.style.display = 'none';
 });
@@ -223,7 +361,7 @@ canvas.on('object:modified', () => {
 // update object color
 colorPicker.addEventListener('input', () => {
     const activeObject = canvas.getActiveObject();
-    if (activeObject && (activeObject.type === 'rect' || activeObject.type === 'circle' || activeObject.type === 'textbox')) {
+    if (activeObject && (activeObject.type === 'rect' || activeObject.type === 'circle' || activeObject.type === 'note'|| activeObject.type === 'personal')) {
         activeObject.set('fill', colorPicker.value);
         canvas.renderAll();
     }
@@ -247,22 +385,6 @@ const gearListContainer = document.getElementById('gear-list-container');
 const searchBar = document.getElementById('search-bar');
 const searchResults = document.getElementById('search-results');
 
-document.addEventListener('keydown', (e) => {
-    if (e.code === "KeyG") {
-        e.preventDefault(); // stop g from being typed into the search bar
-        gearListContainer.style.display = "block";
-
-        gearListContainer.style.position = "absolute";
-        gearListContainer.style.left = `${pointerPosition.x}px`;
-        gearListContainer.style.top = `${pointerPosition.y}px`;
-        
-        searchBar.value = ""; // clear search bar
-        searchResults.innerHTML = ""; // clear search results
-        searchBar.focus();
-        isSearchBarActive = true;
-    }
-});
-
 document.addEventListener('click', (e) => {
     if (!gearListContainer.contains(e.target)) {
         gearListContainer.style.display = "none";
@@ -270,11 +392,6 @@ document.addEventListener('click', (e) => {
         searchResults.innerHTML = "";
         searchResults.style.border = "none";
     }
-});
-
-// stop hotkeys from activating while typing in searchbar
-searchBar.addEventListener('keydown', (e) => {
-    e.stopPropagation();
 });
 
 searchBar.addEventListener('input', () => {
@@ -323,38 +440,75 @@ function addGearToCanvas(url) {
 // Gear Inventory
 
 function compileGearInventory() {
-    const gearInventory = [];
+    const gearInventoryMap = new Map(); // To keep track of item counts
    
     canvas.getObjects().forEach(obj => {
         if (obj.type === 'image' && obj._element) {
             const url = obj._element.src;
     
-            // creates a URL object from the image URL
+            // extract file pathname from image url
             const parsedUrl = new URL(url);
-    
-            // gets file pathname from the URL
             const relativeUrl = parsedUrl.pathname;
     
-            const matchingGear = gearList.find(function(item) {
-                return relativeUrl.endsWith(item.url);
-            });
+            const matchingGear = gearList.find(item => relativeUrl.endsWith(item.url));
     
             if (matchingGear) {
-                gearInventory.push(matchingGear.name);
+                const gearName = matchingGear.name;
+                // increment item number or add it to map
+                if (gearInventoryMap.has(gearName)) {
+                    gearInventoryMap.set(gearName, gearInventoryMap.get(gearName) + 1);
+                } else {
+                    gearInventoryMap.set(gearName, 1);
+                }
             } else {
                 console.log('No matching gear found for:', url);
             }
+        } else if (obj.type === 'personal') {
+            const text = obj.text.trim();
+            // increment item number or add it to map
+            if (gearInventoryMap.has(text)) {
+                gearInventoryMap.set(text, gearInventoryMap.get(text) + 1);
+            } else {
+                gearInventoryMap.set(text, 1);
+            }
         }
     });
-    
+
+    // convert map to 
+    const gearInventory = Array.from(gearInventoryMap.entries()).map(([name, count]) => {
+        if (count > 1) {
+            return `${name} (x${count})`;
+        } else {
+            return name;
+        }
+    });
 
     console.log('Session List:', gearInventory);
     return gearInventory;
 }
 
-document.addEventListener('keydown', (e) => {
-    if (e.code === 'KeyI') {
-        const gearInventory = compileGearInventory();
-        alert('Gear Inventory:\n' + gearInventory.join('\n')); 
+function saveCanvasAsPDF() {
+    const { jsPDF } = window.jspdf;
+
+    // Prompt user for file name
+    const fileName = prompt('Enter a name for your PDF file:', 'My Setup');
+    if (!fileName) {
+        alert('File name cannot be empty. PDF download canceled.');
+        return; // exit if user cancels or enters nothing
     }
-});
+
+    canvas.renderAll();
+
+    const dataUrl = canvas.toDataURL({ format: 'png', multiplier: 2 }); // multiplier = quality
+
+    const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'px',
+        format: [canvas.width, canvas.height]
+    });
+
+    pdf.addImage(dataUrl, 'PNG', 0, 0, canvas.width, canvas.height);
+
+    pdf.save(`${fileName}.pdf`);
+}
+
