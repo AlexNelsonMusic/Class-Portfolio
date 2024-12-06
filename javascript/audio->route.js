@@ -73,6 +73,11 @@ document.addEventListener('keydown', (e) => {
         return;
     }
 
+    if ((e.metaKey || e.ctrlKey) && e.code === 'KeyC') {
+        e.preventDefault();
+        document.getElementById('controls-window').style.visibility = 'visible';
+    }
+
     if ((e.metaKey || e.ctrlKey) && e.code === 'KeyS') {
         e.preventDefault();
         saveCanvasAsPDF();
@@ -90,11 +95,6 @@ document.addEventListener('keydown', (e) => {
             canvas.renderAll();
         }
     }
-
-    if ((e.metaKey || e.ctrlKey) && e.code === 'KeyC') {
-        e.preventDefault();
-        document.getElementById('controls-window').style.visibility = 'visible';
-    
 
     const activeObject = canvas.getActiveObject();
 
@@ -188,7 +188,7 @@ document.addEventListener('keydown', (e) => {
         const gearInventory = compileGearInventory();
         alert('Gear Inventory:\n' + gearInventory.join('\n')); 
     }
-}});
+});
 
 // object duplication
 

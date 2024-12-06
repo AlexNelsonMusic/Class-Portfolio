@@ -50,6 +50,7 @@ th{
 caption{
     font-size: 25px;
     padding-bottom: 10px;
+    color: #fff;
 }
 #close-window{
     visibility: hidden;
