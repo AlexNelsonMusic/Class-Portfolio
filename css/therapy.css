@@ -10,7 +10,7 @@ html, body {
 }
 body{
     flex-direction: column;
-    background-image: url(../images/100-1-12569.gif);
+    background-image: url(../images/100.gif);
     background-size: 200px;
 }
 #offers{
