@@ -34,22 +34,26 @@ h1{
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
     text-align: center;
     font-size: 25px;
     margin-top: 100px;
-    line-height: 0px;
+    line-height: 0.5;
 }
 a{
     text-decoration: none;
     color: #fff;
-    transition: all 0.25s;
+    display: inline-block;
+    transition: transform 0.25s ease, filter 0.25s ease;
+    font-size: 25px;
 }
 a:visited{
     color: #fff;
 }
 a:hover{
-    color: red;
-    transition: all 0.25s;
+    transition: 0.25s;
+    filter: drop-shadow(0px 0px 6px);
+    transform: scale(1.1); /* Enlarges the text */
 }
 #controls-window{
     background-color: #000;
