@@ -1,8 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap');
 body, html{
     margin: 0;
     padding: 0;
     overflow: hidden;
     height: 100%;
+    font-family: "Source Code Pro", serif;
 }
 canvas{
     display: block;
@@ -46,7 +48,6 @@ th, tr, td{
 }
 th{
     font-size: 18px;
-    color: #fff;
 }
 caption{
     font-size: 25px;
@@ -61,10 +62,16 @@ label{
     position: absolute;
     top: 10px; 
     right: 10px;
+    width: 25px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
     border: 1px solid #fff;
-    padding-inline: 5px;
-    padding-block: 2px;
     cursor: pointer;
     background-color: #000;
     color: #fff;
+    font-size: 22px;
+    padding-bottom: 5px;
 }
